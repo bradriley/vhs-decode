@@ -225,6 +225,7 @@ fi
 input_stripped="${input%.tbc}"
 input_tbc="$input_stripped".tbc
 input_chroma_tbc="${input%.tbc}"_chroma.tbc
+output_stripped=$(basename "$input_stripped").$video_container
 
 if [ "$input_tbc_json" = "" ]; then
 	input_tbc_json=$input_tbc.json
@@ -301,7 +302,7 @@ if [ "$monochrome" = "1" ]; then
 	-map "[output]":v -c:v "$video_codec" -coder 1 -context 1 -g "$video_gop" -level 3 -slices 16 -slicecrc 1 -top 1 \
 	-pixel_format "$output_format" -color_range tv -color_primaries "$color_primaries" -color_trc "$color_trc" \
 	-colorspace $color_space "${audio_opts_2[@]}" \
-	-shortest -y "$input_stripped"."$video_container"
+	-shortest -y "$output_stripped"
 else
 	ffmpeg -hide_banner -thread_queue_size 4096 -color_range tv \
 	-thread_queue_size 2048 -i <(
@@ -317,7 +318,7 @@ else
 	-map "[output]":v -c:v "$video_codec" -coder 1 -context 1 -g "$video_gop" -level 3 -slices 16 -slicecrc 1 -top 1 \
 	-pixel_format "$output_format" -color_range tv -color_primaries "$color_primaries" -color_trc "$color_trc" \
 	-colorspace $color_space "${audio_opts_2[@]}" \
-	-shortest -y "${input_stripped}"."$video_container"
+	-shortest -y "$output_stripped"
 fi
 
 # Encode internet-friendly clip of previous lossless result:
